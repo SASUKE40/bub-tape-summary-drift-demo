@@ -2,6 +2,8 @@
 
 A reproducible experiment that uses [Bub](https://github.com/bubbuild/bub)'s real append-only `Tape`, `TapeEntry`, `FileTapeStore`, anchors, and handoffs to measure how repeated summaries lose meaning.
 
+![Semantic recall across handoffs](sample-results/semantic-recall.png)
+
 The experiment compares:
 
 1. **Recursive handoff** — each round summarizes only the previous summary plus the latest update. Once a fact is omitted, it cannot return. This is the common summary-of-summary failure mode.
@@ -80,7 +82,10 @@ Outputs:
 .demo-tapes/
 ├── summary_drift__recursive.jsonl
 ├── summary_drift__grounded.jsonl
-└── report.json
+├── report.json
+└── charts/
+    ├── semantic-recall.png
+    └── summary-drift-dashboard.png
 ```
 
 Re-render an existing result without model calls:
@@ -88,6 +93,16 @@ Re-render an existing result without model calls:
 ```bash
 uv run tape-drift report .demo-tapes/report.json
 ```
+
+Generate charts from any existing report:
+
+```bash
+uv run tape-drift visualize \
+  sample-results/report.json \
+  --output-dir sample-results
+```
+
+The dashboard combines semantic recall, exact-key detail retention, and per-fact final status. The compact chart is sized for README and chat previews.
 
 Run tests and lint:
 

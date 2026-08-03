@@ -8,6 +8,7 @@ import typer
 
 from .experiment import load_result, load_scenario, run_experiment
 from .report import render
+from .visualize import plot_compact, plot_result
 
 app = typer.Typer(no_args_is_help=True, help="Measure summary drift across Bub tape handoffs.")
 ROOT = Path(__file__).resolve().parents[2]
@@ -34,6 +35,10 @@ def run(
         )
     )
     render(result)
+    chart_dir = tape_dir / "charts"
+    plot_result(result, chart_dir / "summary-drift-dashboard.png")
+    plot_compact(result, chart_dir / "semantic-recall.png")
+    typer.echo(f"charts written to {chart_dir}")
 
 
 @app.command()
@@ -42,6 +47,19 @@ def report(
 ) -> None:
     """Render an existing report without calling a model."""
     render(load_result(path))
+
+
+@app.command()
+def visualize(
+    path: Annotated[Path, typer.Argument(exists=True, dir_okay=False)] = ROOT / ".demo-tapes/report.json",
+    output_dir: Annotated[Path, typer.Option()] = ROOT / ".demo-tapes/charts",
+) -> None:
+    """Generate full and compact PNG charts from a report."""
+    result = load_result(path)
+    full = plot_result(result, output_dir / "summary-drift-dashboard.png")
+    compact = plot_compact(result, output_dir / "semantic-recall.png")
+    typer.echo(f"wrote {full}")
+    typer.echo(f"wrote {compact}")
 
 
 if __name__ == "__main__":
