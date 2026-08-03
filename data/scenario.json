@@ -1,0 +1,85 @@
+{
+  "scenario": "Atlas migration",
+  "facts": [
+    {
+      "id": "F01",
+      "category": "goal",
+      "statement": "Migrate Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+      "keywords": ["atlas", "billing", "mysql 5.7", "postgresql 16"]
+    },
+    {
+      "id": "F02",
+      "category": "constraint",
+      "statement": "Production cutover must occur on 2026-09-18 between 02:00 and 03:00 UTC.",
+      "keywords": ["2026-09-18", "02:00", "03:00", "utc"]
+    },
+    {
+      "id": "F03",
+      "category": "constraint",
+      "statement": "Maximum customer-visible write downtime is 90 seconds.",
+      "keywords": ["90 seconds", "write downtime"]
+    },
+    {
+      "id": "F04",
+      "category": "constraint",
+      "statement": "The migration must sustain 500 concurrent writers at p95 latency below 120 ms.",
+      "keywords": ["500", "concurrent writers", "120 ms", "p95"]
+    },
+    {
+      "id": "F05",
+      "category": "exception",
+      "statement": "SQLite is permitted only for developer-local fixtures and must never be used in staging or production.",
+      "keywords": ["sqlite", "developer-local", "never", "staging", "production"]
+    },
+    {
+      "id": "F06",
+      "category": "decision",
+      "statement": "Use logical replication for cutover, but the decision remains provisional until Friday's load test passes.",
+      "keywords": ["logical replication", "provisional", "friday", "load test"]
+    },
+    {
+      "id": "F07",
+      "category": "rollback",
+      "statement": "Rollback if replication lag exceeds 30 seconds for 3 consecutive minutes.",
+      "keywords": ["rollback", "replication lag", "30 seconds", "3 consecutive minutes"]
+    },
+    {
+      "id": "F08",
+      "category": "security",
+      "statement": "Database credentials must come from Vault path secret/atlas/prod and must not be written to the tape.",
+      "keywords": ["vault", "secret/atlas/prod", "must not", "tape"]
+    },
+    {
+      "id": "F09",
+      "category": "ownership",
+      "statement": "Mina owns the migration; Diego is the rollback approver.",
+      "keywords": ["mina", "migration", "diego", "rollback approver"]
+    },
+    {
+      "id": "F10",
+      "category": "compliance",
+      "statement": "Retain audit events for 400 days, but purge raw customer payloads after 7 days.",
+      "keywords": ["audit events", "400 days", "raw customer payloads", "7 days"]
+    },
+    {
+      "id": "F11",
+      "category": "scope",
+      "statement": "The migration covers billing writes only; analytics remains on MySQL this quarter.",
+      "keywords": ["billing writes only", "analytics", "mysql", "this quarter"]
+    },
+    {
+      "id": "F12",
+      "category": "verification",
+      "statement": "Success requires zero checksum mismatches across all 48 tenant shards.",
+      "keywords": ["zero", "checksum mismatches", "48", "tenant shards"]
+    }
+  ],
+  "round_updates": [
+    "Discovery update: staging replay succeeded on 12 representative shards; this does not yet validate all 48 shards.",
+    "Load-test update: the first run reached 430 concurrent writers and p95 latency of 118 ms; the 500-writer requirement remains unmet.",
+    "Security update: Vault access was validated in staging; production access is still pending approval.",
+    "Operations update: Mina confirmed availability for the cutover window; Diego has not yet signed the rollback plan.",
+    "Data update: two checksum mismatches appeared in a dry run and were fixed; final verification must still report zero mismatches.",
+    "Decision update: logical replication is still provisional because the required 500-writer load test has not passed."
+  ]
+}

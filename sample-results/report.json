@@ -1,0 +1,1214 @@
+{
+  "model": "openai:gpt-5.4-mini",
+  "judge_model": "openai:gpt-5.4",
+  "rounds": 6,
+  "scenario": "Atlas migration",
+  "results": [
+    {
+      "strategy": "recursive",
+      "round": 1,
+      "anchor": "round/1",
+      "summary": "Staging replay succeeded on 12 representative shards, but this is not enough to validate the full 48-shard requirement. All prior constraints still stand: production cutover is 2026-09-18 02:00-03:00 UTC, max customer-visible write downtime is 90 seconds, target performance is 500 concurrent writers at p95 <120 ms, logical replication remains provisional pending Friday’s load test, rollback triggers at >30s lag for 3 consecutive minutes, credentials must come from Vault secret/atlas/prod, Mina owns migration with Diego approving rollback, billing writes only are in scope, and success still requires zero checksum mismatches across all 48 tenant shards.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F11",
+        "F12"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "missing",
+            "explanation": "The summary does not explicitly mention the goal to migrate Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+            "quote": null
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the production cutover window and date.",
+            "quote": "production cutover is 2026-09-18 02:00-03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum customer-visible write downtime.",
+            "quote": "max customer-visible write downtime is 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the concurrency and latency requirement.",
+            "quote": "target performance is 500 concurrent writers at p95 <120 ms"
+          },
+          {
+            "fact_id": "F05",
+            "status": "missing",
+            "explanation": "The summary does not mention the SQLite exception or the prohibition on using SQLite in staging or production.",
+            "quote": null
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the logical replication decision and that it remains provisional pending Friday's load test.",
+            "quote": "logical replication remains provisional pending Friday’s load test"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "rollback triggers at >30s lag for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "missing",
+            "explanation": "The summary preserves the Vault path but omits the requirement that credentials must not be written to the tape.",
+            "quote": null
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles.",
+            "quote": "Mina owns migration with Diego approving rollback"
+          },
+          {
+            "fact_id": "F10",
+            "status": "missing",
+            "explanation": "The summary does not mention retaining audit events for 400 days or purging raw customer payloads after 7 days.",
+            "quote": null
+          },
+          {
+            "fact_id": "F11",
+            "status": "missing",
+            "explanation": "The summary preserves that billing writes only are in scope, but omits that analytics remains on MySQL this quarter.",
+            "quote": null
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.4166666666666667,
+      "semantic_recall": 0.5833333333333334,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 659
+    },
+    {
+      "strategy": "grounded",
+      "round": 1,
+      "anchor": "round/1",
+      "summary": "Atlas billing migration: move MySQL 5.7 to PostgreSQL 16. Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC, with max customer-visible write downtime 90 seconds. The migration must handle 500 concurrent writers at p95 latency <120 ms. Scope is billing writes only; analytics stays on MySQL this quarter. SQLite is allowed only for developer-local fixtures, never staging or production. Cutover will use logical replication, but this is provisional until Friday's load test passes. Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes. Credentials must come from Vault path secret/atlas/prod and never be written to tape. Mina owns the migration; Diego approves rollback. Compliance requires retaining audit events for 400 days and purging raw customer payloads after 7 days. Success requires zero checksum mismatches across all 48 tenant shards; staging replay has succeeded on 12 representative shards only, which does not validate all 48 shards.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "U1"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the migration goal from MySQL 5.7 to PostgreSQL 16.",
+            "quote": "Atlas billing migration: move MySQL 5.7 to PostgreSQL 16."
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the required production cutover date and UTC window.",
+            "quote": "Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the maximum allowed customer-visible write downtime of 90 seconds.",
+            "quote": "with max customer-visible write downtime 90 seconds."
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the concurrency target and the p95 latency threshold.",
+            "quote": "The migration must handle 500 concurrent writers at p95 latency <120 ms."
+          },
+          {
+            "fact_id": "F05",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that SQLite is allowed only for developer-local fixtures and prohibited in staging and production.",
+            "quote": "SQLite is allowed only for developer-local fixtures, never staging or production."
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the decision to use logical replication and the fact that it remains provisional until Friday's load test passes.",
+            "quote": "Cutover will use logical replication, but this is provisional until Friday's load test passes."
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes."
+          },
+          {
+            "fact_id": "F08",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the Vault path and the prohibition on writing credentials to tape.",
+            "quote": "Credentials must come from Vault path secret/atlas/prod and never be written to tape."
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles.",
+            "quote": "Mina owns the migration; Diego approves rollback."
+          },
+          {
+            "fact_id": "F10",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both retention periods: 400 days for audit events and 7 days before purging raw customer payloads.",
+            "quote": "Compliance requires retaining audit events for 400 days and purging raw customer payloads after 7 days."
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the scope limitation to billing writes and that analytics remains on MySQL this quarter.",
+            "quote": "Scope is billing writes only; analytics stays on MySQL this quarter."
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "Success requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.8333333333333334,
+      "semantic_recall": 1.0,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 989
+    },
+    {
+      "strategy": "recursive",
+      "round": 2,
+      "anchor": "round/2",
+      "summary": "Load test improved to 430 concurrent writers at p95 118 ms, but the 500-writer target is still unmet. All prior constraints remain unchanged: staging replay only validated 12 of 48 shards; production cutover is 2026-09-18 02:00-03:00 UTC; max customer-visible write downtime is 90 seconds; logical replication is still provisional pending Friday’s load test; rollback still triggers at >30s lag for 3 consecutive minutes; credentials must come from Vault secret/atlas/prod; Mina owns the migration with Diego approving rollback; billing writes only are in scope; and success still requires zero checksum mismatches across all 48 tenant shards.",
+      "source_ids": [
+        "F01",
+        "F02"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "missing",
+            "explanation": "The summary does not explicitly state the goal to migrate Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+            "quote": null
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the production cutover date and time window.",
+            "quote": "production cutover is 2026-09-18 02:00-03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum customer-visible write downtime.",
+            "quote": "max customer-visible write downtime is 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary preserves the requirement that 500 concurrent writers is the target and states it is still unmet; the update also preserves the observed 430 writers at p95 118 ms.",
+            "quote": "Load test improved to 430 concurrent writers at p95 118 ms, but the 500-writer target is still unmet."
+          },
+          {
+            "fact_id": "F05",
+            "status": "missing",
+            "explanation": "The summary does not mention the SQLite exception or the prohibition on using SQLite in staging or production.",
+            "quote": null
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that logical replication is the cutover approach and that the decision remains provisional pending Friday's load test.",
+            "quote": "logical replication is still provisional pending Friday’s load test"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "rollback still triggers at >30s lag for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "missing",
+            "explanation": "The summary preserves the Vault path but omits the requirement that credentials must not be written to the tape.",
+            "quote": null
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval.",
+            "quote": "Mina owns the migration with Diego approving rollback"
+          },
+          {
+            "fact_id": "F10",
+            "status": "missing",
+            "explanation": "The summary does not mention retaining audit events for 400 days or purging raw customer payloads after 7 days.",
+            "quote": null
+          },
+          {
+            "fact_id": "F11",
+            "status": "missing",
+            "explanation": "The summary preserves that billing writes only are in scope, but omits that analytics remains on MySQL this quarter.",
+            "quote": null
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.3333333333333333,
+      "semantic_recall": 0.5833333333333334,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 643
+    },
+    {
+      "strategy": "grounded",
+      "round": 2,
+      "anchor": "round/2",
+      "summary": "Atlas billing migration goal remains MySQL 5.7 -> PostgreSQL 16. Production cutover is fixed for 2026-09-18 02:00-03:00 UTC, with max customer-visible write downtime 90 seconds. Scope is billing writes only; analytics stays on MySQL this quarter. SQLite is allowed only for developer-local fixtures, never staging/production. Cutover currently uses logical replication, but this is provisional until Friday’s load test passes. Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes. Security: credentials must come from Vault path secret/atlas/prod and must not be written to tape. Ownership: Mina owns the migration; Diego approves rollback. Compliance: retain audit events 400 days; purge raw customer payloads after 7 days. Success requires zero checksum mismatches across all 48 tenant shards; staging replay has only succeeded on 12 representative shards and does not validate all 48. Load test first run reached 430 concurrent writers at p95 118 ms, so the 500-writer requirement is still unmet; sustained target is 500 concurrent writers at p95 below 120 ms.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "U1",
+        "U2"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the migration goal and source/target databases.",
+            "quote": "Atlas billing migration goal remains MySQL 5.7 -> PostgreSQL 16."
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the required production cutover date and UTC time window.",
+            "quote": "Production cutover is fixed for 2026-09-18 02:00-03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum allowed customer-visible write downtime.",
+            "quote": "with max customer-visible write downtime 90 seconds."
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the performance requirement, including 500 concurrent writers and p95 latency below 120 ms.",
+            "quote": "sustained target is 500 concurrent writers at p95 below 120 ms."
+          },
+          {
+            "fact_id": "F05",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that SQLite is only allowed for developer-local fixtures and prohibited in staging and production.",
+            "quote": "SQLite is allowed only for developer-local fixtures, never staging/production."
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the use of logical replication and the fact that the decision is still provisional pending Friday's load test.",
+            "quote": "Cutover currently uses logical replication, but this is provisional until Friday’s load test passes."
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes."
+          },
+          {
+            "fact_id": "F08",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the Vault path requirement and the prohibition on writing credentials to tape.",
+            "quote": "Security: credentials must come from Vault path secret/atlas/prod and must not be written to tape."
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles.",
+            "quote": "Ownership: Mina owns the migration; Diego approves rollback."
+          },
+          {
+            "fact_id": "F10",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both retention periods: 400 days for audit events and 7 days for raw customer payloads.",
+            "quote": "Compliance: retain audit events 400 days; purge raw customer payloads after 7 days."
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that only billing writes are in scope and analytics stays on MySQL this quarter.",
+            "quote": "Scope is billing writes only; analytics stays on MySQL this quarter."
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "Success requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.9166666666666666,
+      "semantic_recall": 1.0,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 1084
+    },
+    {
+      "strategy": "recursive",
+      "round": 3,
+      "anchor": "round/3",
+      "summary": "Load test improved to 430 concurrent writers at p95 118 ms, but the 500-writer target remains unmet. Security status: Vault access was validated in staging; production access is still pending approval. All prior constraints remain unchanged: staging replay only validated 12 of 48 shards; production cutover is 2026-09-18 02:00-03:00 UTC; max customer-visible write downtime is 90 seconds; logical replication is still provisional pending Friday’s load test; rollback still triggers at >30s lag for 3 consecutive minutes; credentials must come from Vault secret/atlas/prod; Mina owns the migration with Diego approving rollback; billing writes only are in scope; and success still requires zero checksum mismatches across all 48 tenant shards.",
+      "source_ids": [
+        "F01",
+        "F02"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "missing",
+            "explanation": "The summary does not explicitly state the goal to migrate Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+            "quote": null
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the production cutover date and time window.",
+            "quote": "production cutover is 2026-09-18 02:00-03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the maximum customer-visible write downtime.",
+            "quote": "max customer-visible write downtime is 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary preserves the requirement by explicitly stating the current test reached 430 concurrent writers at p95 118 ms and that the 500-writer target remains unmet.",
+            "quote": "Load test improved to 430 concurrent writers at p95 118 ms, but the 500-writer target remains unmet."
+          },
+          {
+            "fact_id": "F05",
+            "status": "missing",
+            "explanation": "The summary does not explicitly mention the SQLite exception or the prohibition on using SQLite in staging or production.",
+            "quote": null
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains that logical replication is the provisional cutover decision pending Friday's load test.",
+            "quote": "logical replication is still provisional pending Friday’s load test"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "rollback still triggers at >30s lag for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "missing",
+            "explanation": "The summary preserves the Vault path source for credentials, but it omits the requirement that credentials must not be written to the tape.",
+            "quote": null
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles.",
+            "quote": "Mina owns the migration with Diego approving rollback"
+          },
+          {
+            "fact_id": "F10",
+            "status": "missing",
+            "explanation": "The summary does not explicitly mention retaining audit events for 400 days or purging raw customer payloads after 7 days.",
+            "quote": null
+          },
+          {
+            "fact_id": "F11",
+            "status": "missing",
+            "explanation": "The summary preserves that billing writes only are in scope, but it omits that analytics remains on MySQL this quarter.",
+            "quote": null
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the verification requirement of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.3333333333333333,
+      "semantic_recall": 0.5833333333333334,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 743
+    },
+    {
+      "strategy": "grounded",
+      "round": 3,
+      "anchor": "round/3",
+      "summary": "Atlas billing migration: move billing writes from MySQL 5.7 to PostgreSQL 16. Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC, with max customer-visible write downtime of 90 seconds. Target performance remains 500 concurrent writers at p95 latency below 120 ms; first load test reached 430 writers at 118 ms, so this requirement is still unmet. Use logical replication for cutover, but the decision is provisional until Friday's load test passes. Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes. Scope is billing writes only; analytics stays on MySQL this quarter. Success requires zero checksum mismatches across all 48 tenant shards; staging replay has only validated 12 representative shards so far. SQLite is allowed only for developer-local fixtures, never staging/production. Credentials must come from Vault path secret/atlas/prod and must not be written to tape; Vault access was validated in staging, but production access still awaits approval. Mina owns the migration and Diego is the rollback approver. Compliance requires retaining audit events for 400 days and purging raw customer payloads after 7 days.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "U1",
+        "U2",
+        "U3"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the migration goal and scope of moving Atlas billing writes from MySQL 5.7 to PostgreSQL 16.",
+            "quote": "Atlas billing migration: move billing writes from MySQL 5.7 to PostgreSQL 16."
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the production cutover date and required UTC window.",
+            "quote": "Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum allowed customer-visible write downtime of 90 seconds.",
+            "quote": "with max customer-visible write downtime of 90 seconds."
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the performance requirement and correctly notes that the first load test did not meet it.",
+            "quote": "Target performance remains 500 concurrent writers at p95 latency below 120 ms; first load test reached 430 writers at 118 ms, so this requirement is still unmet."
+          },
+          {
+            "fact_id": "F05",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that SQLite is only allowed for developer-local fixtures and forbidden in staging and production.",
+            "quote": "SQLite is allowed only for developer-local fixtures, never staging/production."
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the decision to use logical replication and the provisional status pending Friday's load test passing.",
+            "quote": "Use logical replication for cutover, but the decision is provisional until Friday's load test passes."
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes."
+          },
+          {
+            "fact_id": "F08",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both credential requirements and also accurately includes the update about staging validation and pending production approval.",
+            "quote": "Credentials must come from Vault path secret/atlas/prod and must not be written to tape; Vault access was validated in staging, but production access still awaits approval."
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles.",
+            "quote": "Mina owns the migration and Diego is the rollback approver."
+          },
+          {
+            "fact_id": "F10",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both compliance retention periods: 400 days for audit events and 7 days for raw customer payloads.",
+            "quote": "Compliance requires retaining audit events for 400 days and purging raw customer payloads after 7 days."
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that only billing writes are in scope and analytics remains on MySQL this quarter.",
+            "quote": "Scope is billing writes only; analytics stays on MySQL this quarter."
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards and accurately notes that only 12 representative shards have been validated so far.",
+            "quote": "Success requires zero checksum mismatches across all 48 tenant shards; staging replay has only validated 12 representative shards so far."
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 1.0,
+      "semantic_recall": 1.0,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 1167
+    },
+    {
+      "strategy": "recursive",
+      "round": 4,
+      "anchor": "round/4",
+      "summary": "Load test remains improved but still short of goal: 430 concurrent writers at p95 118 ms, with the 500-writer target still unmet. Security: Vault access was validated in staging; production access still awaits approval. Operations: Mina confirmed availability for the 2026-09-18 02:00-03:00 UTC cutover window, but Diego has not yet signed the rollback plan. All prior constraints remain unchanged: staging replay only validated 12 of 48 shards; max customer-visible write downtime is 90 seconds; logical replication is still provisional pending Friday’s load test; rollback still triggers at >30s lag for 3 consecutive minutes; credentials must come from Vault secret/atlas/prod; Mina owns the migration with Diego approving rollback; billing writes only are in scope; and success still requires zero checksum mismatches across all 48 tenant shards.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "missing",
+            "explanation": "The summary does not explicitly state the goal to migrate Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+            "quote": null
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the required production cutover date and time window.",
+            "quote": "Mina confirmed availability for the 2026-09-18 02:00-03:00 UTC cutover window"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum allowed customer-visible write downtime.",
+            "quote": "max customer-visible write downtime is 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly states both the measured update and that the 500-writer requirement remains unmet, preserving the original requirement and current status.",
+            "quote": "430 concurrent writers at p95 118 ms, with the 500-writer target still unmet"
+          },
+          {
+            "fact_id": "F05",
+            "status": "missing",
+            "explanation": "The summary does not mention the SQLite exception or the prohibition on using SQLite in staging or production.",
+            "quote": null
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that logical replication is the cutover approach and that the decision is still provisional pending Friday's load test.",
+            "quote": "logical replication is still provisional pending Friday’s load test"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "rollback still triggers at >30s lag for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "missing",
+            "explanation": "The summary preserves the Vault source path, but it omits the requirement that credentials must not be written to the tape.",
+            "quote": null
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles.",
+            "quote": "Mina owns the migration with Diego approving rollback"
+          },
+          {
+            "fact_id": "F10",
+            "status": "missing",
+            "explanation": "The summary does not mention retaining audit events for 400 days or purging raw customer payloads after 7 days.",
+            "quote": null
+          },
+          {
+            "fact_id": "F11",
+            "status": "missing",
+            "explanation": "The summary preserves that billing writes only are in scope, but it omits that analytics remains on MySQL this quarter.",
+            "quote": null
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.3333333333333333,
+      "semantic_recall": 0.5833333333333334,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 850
+    },
+    {
+      "strategy": "grounded",
+      "round": 4,
+      "anchor": "round/4",
+      "summary": "Atlas billing migration remains scoped to billing writes only, moving from MySQL 5.7 to PostgreSQL 16; analytics stays on MySQL this quarter. Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC, with max customer-visible write downtime capped at 90 seconds. The chosen cutover method is logical replication, but it is still provisional until Friday's load test passes. Current load-test evidence is insufficient: the first run reached 430 concurrent writers at p95 118 ms, so the 500-writer/p95<120 ms target remains unmet. Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes. Success still requires zero checksum mismatches across all 48 tenant shards; staging replay has only validated 12 representative shards so far. SQLite is allowed only for developer-local fixtures and must never be used in staging or production. Credentials must come from Vault path secret/atlas/prod and must not be written to tape; Vault access was validated in staging, but production access still needs approval. Mina owns the migration and has confirmed availability for the cutover window; Diego is the rollback approver, but he has not yet signed the rollback plan. Compliance retention remains 400 days for audit events, with raw customer payloads purged after 7 days.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "U1",
+        "U2",
+        "U3",
+        "U4"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the migration goal and source/target databases.",
+            "quote": "moving from MySQL 5.7 to PostgreSQL 16"
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the required production cutover window and date.",
+            "quote": "Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum allowed customer-visible write downtime.",
+            "quote": "with max customer-visible write downtime capped at 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the performance requirement and the update that it remains unmet after reaching only 430 writers at p95 118 ms.",
+            "quote": "the first run reached 430 concurrent writers at p95 118 ms, so the 500-writer/p95<120 ms target remains unmet"
+          },
+          {
+            "fact_id": "F05",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the SQLite restriction and allowed exception.",
+            "quote": "SQLite is allowed only for developer-local fixtures and must never be used in staging or production"
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the logical replication decision and that it remains provisional pending Friday's load test.",
+            "quote": "The chosen cutover method is logical replication, but it is still provisional until Friday's load test passes"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the required Vault path and the prohibition on writing credentials to tape.",
+            "quote": "Credentials must come from Vault path secret/atlas/prod and must not be written to tape"
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approver roles, and also includes update details about availability and unsigned rollback plan.",
+            "quote": "Mina owns the migration and has confirmed availability for the cutover window; Diego is the rollback approver"
+          },
+          {
+            "fact_id": "F10",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both retention periods and the distinction between audit events and raw customer payloads.",
+            "quote": "Compliance retention remains 400 days for audit events, with raw customer payloads purged after 7 days"
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the scope limitation to billing writes and that analytics stays on MySQL this quarter.",
+            "quote": "remains scoped to billing writes only... analytics stays on MySQL this quarter"
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards, and also notes only 12 representative shards have been replayed so far.",
+            "quote": "Success still requires zero checksum mismatches across all 48 tenant shards; staging replay has only validated 12 representative shards so far"
+          }
+        ],
+        "unsupported_claims": [
+          "Production cutover is fixed for 2026-09-18 between 02:00 and 03:00 UTC."
+        ]
+      },
+      "deterministic_recall": 1.0,
+      "semantic_recall": 1.0,
+      "contradicted": 0,
+      "unsupported": 1,
+      "summary_chars": 1294
+    },
+    {
+      "strategy": "recursive",
+      "round": 5,
+      "anchor": "round/5",
+      "summary": "Load test remains improved but still short of goal: 430 concurrent writers at p95 118 ms, with the 500-writer target still unmet. Security: Vault access was validated in staging; production access still awaits approval. Operations: Mina confirmed availability for the 2026-09-18 02:00-03:00 UTC cutover window, but Diego has not yet signed the rollback plan. Data update: two checksum mismatches appeared in a dry run and were fixed; final verification must still report zero mismatches. All prior constraints remain unchanged: staging replay only validated 12 of 48 shards; max customer-visible write downtime is 90 seconds; logical replication is still provisional pending Friday’s load test; rollback still triggers at >30s lag for 3 consecutive minutes; credentials must come from Vault secret/atlas/prod; Mina owns the migration with Diego approving rollback; billing writes only are in scope; and success still requires zero checksum mismatches across all 48 tenant shards.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "missing",
+            "explanation": "The summary does not explicitly state the goal of migrating Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+            "quote": null
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the required production cutover window and date.",
+            "quote": "the 2026-09-18 02:00-03:00 UTC cutover window"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the 90-second maximum customer-visible write downtime constraint.",
+            "quote": "max customer-visible write downtime is 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the current load-test result and that the 500-writer requirement remains unmet, preserving the requirement of 500 concurrent writers and p95 latency below 120 ms.",
+            "quote": "430 concurrent writers at p95 118 ms, with the 500-writer target still unmet"
+          },
+          {
+            "fact_id": "F05",
+            "status": "missing",
+            "explanation": "The summary does not mention the SQLite exception or the prohibition on using SQLite in staging or production.",
+            "quote": null
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains that logical replication is the cutover approach and that the decision is still provisional pending Friday's load test.",
+            "quote": "logical replication is still provisional pending Friday’s load test"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the rollback trigger threshold and duration.",
+            "quote": "rollback still triggers at >30s lag for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "missing",
+            "explanation": "The summary preserves the Vault path requirement but omits the separate requirement that credentials must not be written to the tape.",
+            "quote": "credentials must come from Vault secret/atlas/prod"
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains ownership and rollback approval roles.",
+            "quote": "Mina owns the migration with Diego approving rollback"
+          },
+          {
+            "fact_id": "F10",
+            "status": "missing",
+            "explanation": "The summary does not mention retaining audit events for 400 days or purging raw customer payloads after 7 days.",
+            "quote": null
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains that only billing writes are in scope.",
+            "quote": "billing writes only are in scope"
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.3333333333333333,
+      "semantic_recall": 0.6666666666666666,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 979
+    },
+    {
+      "strategy": "grounded",
+      "round": 5,
+      "anchor": "round/5",
+      "summary": "Goal: migrate Atlas billing from MySQL 5.7 to PostgreSQL 16. Production cutover is fixed for 2026-09-18 02:00–03:00 UTC, with max customer-visible write downtime of 90 seconds. Scope is billing writes only; analytics stays on MySQL this quarter. SQLite is allowed only for developer-local fixtures, never staging/production. Cutover uses logical replication, but this remains provisional until Friday’s load test passes. Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes. Security requires credentials from Vault path secret/atlas/prod and never written to tape; staging Vault access was validated, but production access still needs approval. Ownership: Mina owns the migration and confirmed availability for the cutover window; Diego is rollback approver but has not yet signed the rollback plan. Compliance: retain audit events 400 days and purge raw customer payloads after 7 days. Verification requires sustaining 500 concurrent writers at p95 latency below 120 ms and zero checksum mismatches across all 48 tenant shards; staging replay succeeded on 12 representative shards, the first load test reached 430 writers at p95 118 ms, and two checksum mismatches in a dry run were fixed, but the 500-writer target and all-48-shard validation are still unmet.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "U1",
+        "U2",
+        "U3",
+        "U4",
+        "U5"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the migration goal with the correct source and target databases.",
+            "quote": "Goal: migrate Atlas billing from MySQL 5.7 to PostgreSQL 16."
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary retains the exact cutover date, time window, and UTC timezone.",
+            "quote": "Production cutover is fixed for 2026-09-18 02:00–03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the 90-second maximum customer-visible write downtime constraint.",
+            "quote": "with max customer-visible write downtime of 90 seconds."
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary states the exact performance requirement of 500 concurrent writers and p95 latency below 120 ms.",
+            "quote": "Verification requires sustaining 500 concurrent writers at p95 latency below 120 ms"
+          },
+          {
+            "fact_id": "F05",
+            "status": "preserved",
+            "explanation": "The summary preserves both the allowed use of SQLite for developer-local fixtures and the prohibition on staging and production use.",
+            "quote": "SQLite is allowed only for developer-local fixtures, never staging/production."
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary preserves both the decision to use logical replication and that it remains provisional pending Friday's load test passing.",
+            "quote": "Cutover uses logical replication, but this remains provisional until Friday’s load test passes."
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The rollback trigger is preserved with the exact lag threshold and duration.",
+            "quote": "Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes."
+          },
+          {
+            "fact_id": "F08",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains both the required Vault path and the prohibition on writing credentials to tape.",
+            "quote": "Security requires credentials from Vault path secret/atlas/prod and never written to tape"
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary preserves ownership and rollback approval roles for Mina and Diego.",
+            "quote": "Ownership: Mina owns the migration and confirmed availability for the cutover window; Diego is rollback approver"
+          },
+          {
+            "fact_id": "F10",
+            "status": "preserved",
+            "explanation": "The summary preserves both retention periods: 400 days for audit events and 7 days for raw customer payloads.",
+            "quote": "Compliance: retain audit events 400 days and purge raw customer payloads after 7 days."
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary preserves the scope limitation to billing writes and that analytics remains on MySQL this quarter.",
+            "quote": "Scope is billing writes only; analytics stays on MySQL this quarter."
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly states that success requires zero checksum mismatches across all 48 tenant shards.",
+            "quote": "Verification requires sustaining 500 concurrent writers at p95 latency below 120 ms and zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.9166666666666666,
+      "semantic_recall": 1.0,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 1283
+    },
+    {
+      "strategy": "recursive",
+      "round": 6,
+      "anchor": "round/6",
+      "summary": "Load test is still below goal: 430 concurrent writers at p95 118 ms, with the 500-writer target still unmet; logical replication remains provisional because the required 500-writer load test has not passed. Security: Vault access was validated in staging, but production access still awaits approval. Operations: Mina confirmed availability for the 2026-09-18 02:00-03:00 UTC cutover window, but Diego has not yet signed the rollback plan. Data update: two checksum mismatches appeared in a dry run and were fixed, but final verification must still show zero mismatches. All prior constraints remain unchanged: staging replay only validated 12 of 48 shards; max customer-visible write downtime is 90 seconds; rollback still triggers at >30s lag for 3 consecutive minutes; credentials must come from Vault secret/atlas/prod; Mina owns the migration with Diego approving rollback; billing writes only are in scope; and success still requires zero checksum mismatches across all 48 tenant shards.",
+      "source_ids": [],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "missing",
+            "explanation": "The summary does not explicitly state the goal to migrate Atlas billing from MySQL 5.7 to PostgreSQL 16.",
+            "quote": null
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the production cutover date and time window.",
+            "quote": "Mina confirmed availability for the 2026-09-18 02:00-03:00 UTC cutover window"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the maximum customer-visible write downtime limit.",
+            "quote": "max customer-visible write downtime is 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the current load-test result and that the 500-writer requirement remains unmet, preserving the performance requirement context.",
+            "quote": "430 concurrent writers at p95 118 ms, with the 500-writer target still unmet"
+          },
+          {
+            "fact_id": "F05",
+            "status": "missing",
+            "explanation": "The summary does not mention the SQLite exception or the prohibition on using SQLite in staging or production.",
+            "quote": null
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly states that logical replication remains provisional because the required 500-writer load test has not passed.",
+            "quote": "logical replication remains provisional because the required 500-writer load test has not passed"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the rollback trigger threshold and duration.",
+            "quote": "rollback still triggers at >30s lag for 3 consecutive minutes"
+          },
+          {
+            "fact_id": "F08",
+            "status": "missing",
+            "explanation": "The summary preserves the Vault source path but omits the requirement that credentials must not be written to the tape.",
+            "quote": null
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains ownership and rollback approval roles.",
+            "quote": "Mina owns the migration with Diego approving rollback"
+          },
+          {
+            "fact_id": "F10",
+            "status": "missing",
+            "explanation": "The summary does not mention retaining audit events for 400 days or purging raw customer payloads after 7 days.",
+            "quote": null
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains that only billing writes are in scope.",
+            "quote": "billing writes only are in scope"
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly retains the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.25,
+      "semantic_recall": 0.6666666666666666,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 993
+    },
+    {
+      "strategy": "grounded",
+      "round": 6,
+      "anchor": "round/6",
+      "summary": "Atlas billing migration: move billing writes from MySQL 5.7 to PostgreSQL 16; analytics stays on MySQL this quarter. Production cutover is fixed for 2026-09-18 02:00–03:00 UTC, with max customer-visible write downtime of 90 seconds. Use logical replication for cutover, but it remains provisional until the 500-writer load test passes; current load-test result is 430 concurrent writers at p95 118 ms, so the requirement (500 concurrent writers at p95 <120 ms) is still unmet. Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes. Success still requires zero checksum mismatches across all 48 tenant shards; a dry run found 2 mismatches and they were fixed, but final verification is still required, and staging replay on 12 representative shards does not validate all 48. Credentials must come from Vault path secret/atlas/prod and not be written to tape; Vault access was validated in staging, but production access is still pending approval. SQLite is allowed only for developer-local fixtures, never staging or production. Mina owns the migration and confirmed availability for the cutover window; Diego is the rollback approver, but has not yet signed the rollback plan. Retention: keep audit events for 400 days and purge raw customer payloads after 7 days.",
+      "source_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "U1",
+        "U2",
+        "U3",
+        "U4",
+        "U5",
+        "U6"
+      ],
+      "grade": {
+        "assessments": [
+          {
+            "fact_id": "F01",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the migration goal and source/target databases.",
+            "quote": "move billing writes from MySQL 5.7 to PostgreSQL 16"
+          },
+          {
+            "fact_id": "F02",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the production cutover date and UTC window.",
+            "quote": "Production cutover is fixed for 2026-09-18 02:00–03:00 UTC"
+          },
+          {
+            "fact_id": "F03",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the maximum customer-visible write downtime.",
+            "quote": "with max customer-visible write downtime of 90 seconds"
+          },
+          {
+            "fact_id": "F04",
+            "status": "preserved",
+            "explanation": "The summary explicitly states the required concurrency and p95 latency threshold, and notes it remains unmet.",
+            "quote": "the requirement (500 concurrent writers at p95 <120 ms) is still unmet"
+          },
+          {
+            "fact_id": "F05",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves that SQLite is only allowed for developer-local fixtures and forbidden in staging and production.",
+            "quote": "SQLite is allowed only for developer-local fixtures, never staging or production."
+          },
+          {
+            "fact_id": "F06",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the provisional decision to use logical replication and correctly reflects the update that it remains provisional until the 500-writer load test passes.",
+            "quote": "Use logical replication for cutover, but it remains provisional until the 500-writer load test passes"
+          },
+          {
+            "fact_id": "F07",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the rollback trigger threshold and duration.",
+            "quote": "Roll back if replication lag exceeds 30 seconds for 3 consecutive minutes."
+          },
+          {
+            "fact_id": "F08",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both the required Vault path and the prohibition on writing credentials to tape.",
+            "quote": "Credentials must come from Vault path secret/atlas/prod and not be written to tape"
+          },
+          {
+            "fact_id": "F09",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves ownership and rollback approval roles, and adds supported update detail about availability/signoff status.",
+            "quote": "Mina owns the migration and confirmed availability for the cutover window; Diego is the rollback approver, but has not yet signed the rollback plan."
+          },
+          {
+            "fact_id": "F10",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves both retention periods and distinguishes audit events from raw customer payloads.",
+            "quote": "Retention: keep audit events for 400 days and purge raw customer payloads after 7 days."
+          },
+          {
+            "fact_id": "F11",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the scope limitation to billing writes and that analytics remains on MySQL this quarter.",
+            "quote": "move billing writes from MySQL 5.7 to PostgreSQL 16; analytics stays on MySQL this quarter."
+          },
+          {
+            "fact_id": "F12",
+            "status": "preserved",
+            "explanation": "The summary explicitly preserves the success criterion of zero checksum mismatches across all 48 tenant shards.",
+            "quote": "Success still requires zero checksum mismatches across all 48 tenant shards"
+          }
+        ],
+        "unsupported_claims": []
+      },
+      "deterministic_recall": 0.75,
+      "semantic_recall": 1.0,
+      "contradicted": 0,
+      "unsupported": 0,
+      "summary_chars": 1284
+    }
+  ],
+  "tape_dir": "/Users/edward/.slock/agents/9399d850-d8d9-4cad-a26b-1183344cfb1c/tape-summary-drift-demo/.demo-tapes",
+  "type": "tape-summary-drift"
+}
